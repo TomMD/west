@@ -837,9 +837,8 @@ def test_parse_multiple_manifest_files(manifest_repo):
 
     # Manifest.from_file() should be also usable with another_yml.
     # The project hierarchy in its return value should still be rooted
-    # in the topdir, but the resulting ManifestProject does not have a
-    # path, because it's not set in the file, and we're explicitly not
-    # comparing its path to manifest.path.
+    # in the topdir, but the resulting ManifestProject will have a path
+    # identical to the path of the manifest file.
     #
     # However, the project hierarchy *must* be rooted at topdir.
     manifest = Manifest.from_file(source_file=another_yml)
@@ -847,9 +846,9 @@ def test_parse_multiple_manifest_files(manifest_repo):
     assert manifest.topdir is not None
     assert PurePath(manifest.topdir) == PurePath(topdir)
     mproj = manifest.projects[0]
-    assert mproj.path is None
-    assert mproj.abspath is None
-    assert mproj.posixpath is None
+    assert mproj.path == topdir
+    assert mproj.abspath == topdir
+    assert mproj.posixpath == PurePath(topdir).as_posix()
     p1 = manifest.projects[1]
     assert p1.name == 'another-1'
     assert p1.url == 'another-url-1'
